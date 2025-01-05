@@ -5,6 +5,7 @@ import cors from "cors";
 import { connectToDb } from "./db/db.js";
 import userRoute from "./routes/user.routes.js";
 import cookieParser from "cookie-parser";
+import captainRoute from "./routes/captain.routes.js";
 const app = express();
 
 connectToDb();
@@ -18,5 +19,6 @@ app.get("/", (req, res) => {
 });
 
 app.use("/users", userRoute);
+app.use("/captains", captainRoute);
 
 export default app;
