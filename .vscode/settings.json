@@ -26,5 +26,6 @@
     "titleBar.border": "#0a0908",
     "titleBar.inactiveBackground": "#0a090899",
     "titleBar.inactiveForeground": "#e7e7e799"
-  }
+  },
+  "cSpell.words": ["firstname", "lastname"]
 }
