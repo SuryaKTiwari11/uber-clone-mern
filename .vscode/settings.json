@@ -27,5 +27,9 @@
     "titleBar.inactiveBackground": "#0a090899",
     "titleBar.inactiveForeground": "#e7e7e799"
   },
-  "cSpell.words": ["firstname", "lastname"]
+  "cSpell.words": ["firstname", "lastname"],
+  "editor.cursorStyle": "line",
+  "editor.cursorSmoothCaretAnimation": "on",
+  "editor.wordWrap": "on",
+  "editor.cursorBlinking": "smooth"
 }
