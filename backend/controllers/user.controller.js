@@ -9,6 +9,10 @@ const registerUser = async (req, res, next) => {
     return res.status(400).json({ errors: errors.array() });
   }
   const { fullname, email, password } = req.body;
+  const isUserExisting = await userModel.findOne({ email });
+  if (!isUserExisting) {
+    return res.status(400).json({ message: "User Already exists" });
+  }
   const hashPassword = await userModel.hashPassword(password);
 
   const user = await userService.createUser({
@@ -27,6 +31,7 @@ const loginUser = async (req, res, next) => {
     return res.status(400).json({ errors: errors.array() });
   }
   const { email, password } = req.body;
+
   const user = await userService.findUser({ email }).select("+password");
   if (!user) {
     return res.status(401).json({ message: "invalid email or password" });
@@ -35,7 +40,7 @@ const loginUser = async (req, res, next) => {
   const isMatch = await userModel.comparePassword(password, user.password);
   if (!isMatch) {
     return res.status(400).json({ message: "Invalid email or password" });
-  }
+  } 
   const token = user.generateAuthToken();
   res.cookie("token", token);
   res.status(200).json({ token, user });

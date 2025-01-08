@@ -3,7 +3,7 @@ import pkg from "bcryptjs";
 const { compare, hash } = pkg;
 import another_pkg from "jsonwebtoken";
 const { sign } = another_pkg;
-const captianSchema = new Schema({
+const captainSchema = new Schema({
   fullname: {
     firstName: {
       type: String,
@@ -66,7 +66,7 @@ const captianSchema = new Schema({
   },
 });
 
-captain.Schema.methods.generateAuthToken = function () {
+captainSchema.methods.generateAuthToken = function () {
   const token = sign({ _id: this._id }, process.env.JWT_SECRET, {
     expiresIn: "24h",
   });
