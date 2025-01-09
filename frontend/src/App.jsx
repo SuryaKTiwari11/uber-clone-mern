@@ -9,11 +9,11 @@ import UserSignUp from "./pages/UserSignUp";
 
 const App = () => {
   return (
-    <div className="bg-red-500  ">
+    <div>
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/captainlogin" element={<CaptainLogin />} />
-        <Route path="/captainsignup" element={<CaptainSignUp />} />
+        <Route path="/captain-login" element={<CaptainLogin />} />
+        <Route path="/captain-signup" element={<CaptainSignUp />} />
         <Route path="/login" element={<UserLogin />} />
         <Route path="/signup" element={<UserSignUp />} />
       </Routes>
