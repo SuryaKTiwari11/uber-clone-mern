@@ -1,30 +1,43 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import Logo from "../assets/Logo.png";
-import { Link } from "react-router-dom";
+import axios from "axios";
+import { Link, useNavigate } from "react-router-dom";
+import { UserDataContext } from "../context/UserContext.jsx"; // Import the correct context
 
 const UserSignUp = () => {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [userData, setUserData] = useState({
-    firstName: "",
-    lastName: "",
-    email: "",
-    password: "",
-  });
+  const { user, setUser } = useContext(UserDataContext); // Use the correct context
 
-  const handleSubmit = (e) => {
+  const Navigate = useNavigate();
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(
-      `First Name: ${firstName}, Last Name: ${lastName}, Email: ${email}, Password: ${password} Submitted Successfully`
-    );
-    setUserData({
-      firstName: firstName,
-      lastName: lastName,
+    const newUser = {
+      fullName: {
+        firstName: firstName,
+        lastName: lastName,
+      },
       email: email,
       password: password,
-    });
+    };
+
+    try {
+      const response = await axios.post(
+        `${import.meta.env.VITE_BASE_URL}/users/register`,
+        newUser
+      );
+      if (response.status === 201) {
+        setUser(response.data.user);
+        localStorage.setItem("token", JSON.stringify(response.data.token));
+        Navigate("/home");
+      }
+    } catch (error) {
+      console.error("Error during sign up:", error);
+    }
+
     setFirstName("");
     setLastName("");
     setEmail("");

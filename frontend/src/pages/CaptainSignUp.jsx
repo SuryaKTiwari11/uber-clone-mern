@@ -8,8 +8,10 @@ const CaptainSignUp = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [captainData, setCaptainData] = useState({
-    firstName: "",
-    lastName: "",
+    fullName: {
+      firstName: "",
+      lastName: "",
+    },
     email: "",
     password: "",
   });
@@ -20,8 +22,11 @@ const CaptainSignUp = () => {
       `First Name: ${firstName}, Last Name: ${lastName}, Email: ${email}, Password: ${password} Submitted Successfully`
     );
     setCaptainData({
-      firstName: firstName,
-      lastName: lastName,
+
+      fullName: {
+        firstName: firstName,
+        lastName: lastName,
+      },
       email: email,
       password: password,
     });
@@ -38,7 +43,9 @@ const CaptainSignUp = () => {
         <h1 className="text-xl font-bold mb-4 text-center">Captain Sign Up</h1>
         <form onSubmit={handleSubmit}>
           <div className="mb-3">
-            <label className="block text-lg font-semibold mb-1">What is your name?</label>
+            <label className="block text-lg font-semibold mb-1">
+              What is your name?
+            </label>
             <div className="flex gap-2">
               <input
                 required

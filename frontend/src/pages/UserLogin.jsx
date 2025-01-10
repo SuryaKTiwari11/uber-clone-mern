@@ -1,6 +1,8 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import Logo from "../assets/Logo.png";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { UserDataContext } from "../context/UserContext";
+import axios from "axios";
 
 const UserLogin = () => {
   const [email, setEmail] = useState("");
@@ -9,16 +11,33 @@ const UserLogin = () => {
     email: "",
     password: "",
   });
-  const SubmitHandlingFunc = (e) => {
+  const { user, setUser } = useContext(UserDataContext);
+  const Navigate = useNavigate();
+  const SubmitHandlingFunc = async (e) => {
     e.preventDefault();
-    console.log(`Email: ${email} Password: ${password} Submitted Successfully`);
-    setUserData({
+
+    const newUser = {
       email: email,
       password: password,
-    });
+    };
+    try {
+      const response = await axios.post(
+        `${import.meta.env.VITE_BASE_URL}/users/login`,
+        newUser
+      );
+      if (response.status === 200) {
+        setUser(response.data.user);
+        localStorage.setItem("token", JSON.stringify(response.data.token));
+        
+        Navigate("/home");
+      }
+    } catch (error) {
+      console.error("Error during login:", error);
+    }
     setPassword("");
     setEmail("");
   };
+
   return (
     <div className="h-screen flex flex-col items-center justify-center bg-[#e6e6e6] p-3">
       <img className="w-fit h-20 mx-auto mb-2" src={Logo} alt="SwiftCab Logo" />
