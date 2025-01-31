@@ -1,0 +1,32 @@
+@keyframes shadow-pulse {
+  0% {
+    text-shadow: 2px 2px var(--shadow-color);
+  }
+  50% {
+    text-shadow: 4px 4px var(--shadow-color);
+  }
+  100% {
+    text-shadow: 2px 2px var(--shadow-color);
+  }
+}
+
+@keyframes line-shadow {
+  0% {
+    text-shadow: 2px 2px var(--shadow-color);
+  }
+  50% {
+    text-shadow: 4px 4px var(--shadow-color);
+  }
+  100% {
+    text-shadow: 2px 2px var(--shadow-color);
+  }
+}
+
+.animate-shadow {
+  --shadow-color: black;
+  animation: shadow-pulse 1s infinite;
+}
+
+.animate-line-shadow {
+  animation: line-shadow 1s infinite;
+}

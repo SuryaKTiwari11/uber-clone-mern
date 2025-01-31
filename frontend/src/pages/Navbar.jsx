@@ -3,9 +3,10 @@ import { Link } from "react-router-dom";
 import { Sun, Moon } from "lucide-react";
 import { Label } from "../components/ui/label";
 import { Switch } from "../components/ui/switch";
+
 const Navbar = ({ isDarkMode, setIsDarkMode }) => {
   return (
-    <nav className="fixed top-0 w-full bg-white dark:bg-zinc-950 shadow-md z-50">
+    <nav className="fixed top-0 w-full bg-white dark:bg-zinc-950 shadow-md z-50 transition-colors duration-700">
       <div className="container mx-auto px-4 py-4 flex justify-between items-center">
         <Link
           to="/"
@@ -39,13 +40,13 @@ const Navbar = ({ isDarkMode, setIsDarkMode }) => {
             Contact
           </Link>
           <div className="flex items-center space-x-2">
-            <Sun className="h-4 w-4" />
+            <Sun className="h-4 w-4 text-zinc-900 dark:text-zinc-50" />
             <Switch
               id="dark-mode"
               checked={isDarkMode}
               onCheckedChange={setIsDarkMode}
             />
-            <Moon className="h-4 w-4" />
+            <Moon className="h-4 w-4 text-zinc-900 dark:text-zinc-50" />
             <Label htmlFor="dark-mode" className="sr-only">
               Toggle dark mode
             </Label>

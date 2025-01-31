@@ -18,10 +18,10 @@ const App = () => {
       <Navbar />
       <Routes>
         <Route path="/" element={<Start />} />
-        <Route path="/captain-login" element={<CaptainLogin />} />
-        <Route path="/captain-signup" element={<CaptainSignUp />} />
-        <Route path="/user-login" element={<UserLogin />} />
-        <Route path="/user-signup" element={<UserSignUp />} />
+        <Route path="/captains-login" element={<CaptainLogin />} />
+        <Route path="/captains-signup" element={<CaptainSignUp />} />
+        <Route path="/users-login" element={<UserLogin />} />
+        <Route path="/users-signup" element={<UserSignUp />} />
         <Route
           path="/home"
           element={
@@ -31,7 +31,7 @@ const App = () => {
           }
         />
         <Route
-          path="/user/logout"
+          path="/user /logout"
           element={
             <UserProtectedWrapper>
               <UserLogout />

@@ -2,27 +2,37 @@ import React, { useContext, useState } from "react";
 import Logo from "../assets/Logo.png";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
-import { UserDataContext } from "../context/UserContext.jsx"; 
-import {Button} from "../components/ui/Button"; 
-import {Input} from "../components/ui/Input"; 
-const UserSignUp = () => {
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const { user, setUser } = useContext(UserDataContext); 
+import { UserDataContext } from "../context/UserContext.jsx";
+import { Button } from "../components/ui/Button";
+import { Input } from "../components/ui/Input";
 
-  const Navigate = useNavigate();
+const UserSignUp = () => {
+  const [formData, setFormData] = useState({
+    firstName: "",
+    lastName: "",
+    email: "",
+    password: "",
+  });
+  const { user, setUser } = useContext(UserDataContext);
+  const navigate = useNavigate();
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     const newUser = {
       fullName: {
-        firstName: firstName,
-        lastName: lastName,
+        firstName: formData.firstName,
+        lastName: formData.lastName,
       },
-      email: email,
-      password: password,
+      email: formData.email,
+      password: formData.password,
     };
 
     try {
@@ -33,16 +43,18 @@ const UserSignUp = () => {
       if (response.status === 201) {
         setUser(response.data.user);
         localStorage.setItem("token", JSON.stringify(response.data.token));
-        Navigate("/home");
+        navigate("/home");
       }
     } catch (error) {
       console.error("Error during sign up:", error);
     }
 
-    setFirstName("");
-    setLastName("");
-    setEmail("");
-    setPassword("");
+    setFormData({
+      firstName: "",
+      lastName: "",
+      email: "",
+      password: "",
+    });
   };
 
   return (
@@ -57,16 +69,18 @@ const UserSignUp = () => {
             <div className="flex gap-2">
               <Input
                 required
-                value={firstName}
-                onChange={(e) => setFirstName(e.target.value)}
+                name="firstName"
+                value={formData.firstName}
+                onChange={handleChange}
                 type="text"
                 className="w-1/2"
                 placeholder="First Name"
               />
               <Input
                 required
-                value={lastName}
-                onChange={(e) => setLastName(e.target.value)}
+                name="lastName"
+                value={formData.lastName}
+                onChange={handleChange}
                 type="text"
                 className="w-1/2"
                 placeholder="Last Name"
@@ -77,8 +91,9 @@ const UserSignUp = () => {
             <label className="block text-lg font-semibold mb-1">Email</label>
             <Input
               required
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              name="email"
+              value={formData.email}
+              onChange={handleChange}
               type="email"
               className="w-full"
               placeholder="email@example.com"
@@ -88,17 +103,15 @@ const UserSignUp = () => {
             <label className="block text-lg font-semibold mb-1">Password</label>
             <Input
               required
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              name="password"
+              value={formData.password}
+              onChange={handleChange}
               type="password"
               className="w-full"
               placeholder="password"
             />
           </div>
-          <Button
-            className="w-full mb-3"
-            type="submit"
-          >
+          <Button className="w-full mb-3" type="submit">
             Sign Up
           </Button>
           <p className="text-center font-semibold text-md">

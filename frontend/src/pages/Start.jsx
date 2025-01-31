@@ -1,8 +1,8 @@
 import React from "react";
-import Logo from "../assets/Logo.png";
 import { Link } from "react-router-dom";
-import { RetroGrid } from "@/components/ui/retro-grid";
-
+import { RetroGrid } from "../components/ui/retro-grid";
+import { TextAnimate } from "@/components/ui/text-animate";
+import { RainbowButton } from "@/components/ui/rainbow-button";
 import Navbar from "./Navbar";
 
 const Start = () => {
@@ -19,14 +19,28 @@ const Start = () => {
   return (
     <>
       <Navbar isDarkMode={isDarkMode} setIsDarkMode={setIsDarkMode} />
-      <div className="relative flex h-screen w-full items-center justify-center overflow-hidden rounded-lg border bg-background md:shadow-xl">
-        <span className="pointer-events-none z-10 whitespace-pre-wrap bg-gradient-to-b  from-[#000000] via-[#000000] to-[#000000] bg-clip-text text-center text-7xl font-bold leading-none tracking-tighter text-transparent  p-1">
-          Swift Cabs
-        </span>
-
-        <RetroGrid />
+      <RetroGrid />
+      <div
+        className={`relative flex flex-col h-screen w-full items-center justify-center overflow-hidden rounded-lg border transition-colors duration-500 ${
+          isDarkMode ? "bg-dark-background" : "bg-background"
+        }`}
+      >
+        <h1 className="text-center text-8xl font-extrabold text-black ">
+          Swift Cab
+        </h1>
+        <TextAnimate
+          animation="blurInUp"
+          by="character"
+          className="text-center text-3xl font-medium text-gray-700 mt-6"
+        >
+          Hope in lil bro, we&apos;re going places!
+        </TextAnimate>
+        <Link to="/users-login">
+          <RainbowButton className="mt-6 p-2 size-large w-40 h-12 text-xl font-semibold transform hover:scale-105 transition-transform duration-4000 ease-in-out">
+            Get Started
+          </RainbowButton>
+        </Link>
       </div>
-     
     </>
   );
 };
