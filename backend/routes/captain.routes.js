@@ -1,6 +1,5 @@
 import { Router } from "express";
-const router = Router();
-import { body } from "express-validator";
+import { body, check } from "express-validator";
 import {
   registerCaptain,
   loginCaptain,
@@ -8,32 +7,29 @@ import {
   logoutCaptain,
 } from "../controllers/captain.controller.js";
 import { authCaptain } from "../middlewares/auth.middleware.js";
+const router = Router();
 
 router.post(
   "/register",
   [
-    body("email").isEmail().withMessage("Invalid Email"),
-    body("fullname.firstName")
-      .isLength({ min: 3 })
-      .withMessage("First name must be at least 3 characters long"),
-    body("fullname.lastName")
-      .optional()
-      .isLength({ min: 3 })
-      .withMessage("Last name must be at least 3 characters long"),
-    body("password")
+    check("fullname.firstname")
+      .notEmpty()
+      .withMessage("First name is required"),
+    check("fullname.lastname").notEmpty().withMessage("Last name is required"),
+    check("email").isEmail().withMessage("Valid email is required"),
+    check("password")
       .isLength({ min: 6 })
       .withMessage("Password must be at least 6 characters long"),
-    body("vehicle.color").isString().withMessage("Color must be a string"),
-    body("vehicle.capacity")
+    check("vehicle.color").notEmpty().withMessage("Vehicle color is required"),
+    check("vehicle.plate").notEmpty().withMessage("Vehicle plate is required"),
+    check("vehicle.capacity")
       .isNumeric()
-      .withMessage("Capacity must be a number"),
-    body("vehicle.plate").isString().withMessage("Plate must be a string"),
-    body("vehicle.vehicleType")
-      .isIn(["car", "bike", "truck", "van", "bus"])
-      .withMessage("Vehicle type must be one of [car, bike, truck, van, bus]"),
+      .withMessage("Vehicle capacity must be a number"),
+    check("vehicle.type").notEmpty().withMessage("Vehicle type is required"),
   ],
   registerCaptain
 );
+
 router.post(
   "/login",
   [
@@ -45,6 +41,6 @@ router.post(
   loginCaptain
 );
 router.get("/profile", authCaptain, getCaptainProfile);
-router.get("logout", authCaptain, logoutCaptain);
+router.post("/logout", authCaptain, logoutCaptain);
 
 export default router;

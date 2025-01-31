@@ -3,6 +3,7 @@ import pkg from "bcryptjs";
 const { compare, hash } = pkg;
 import another_pkg from "jsonwebtoken";
 const { sign } = another_pkg;
+
 const captainSchema = new Schema({
   fullname: {
     firstName: {
@@ -76,8 +77,10 @@ captainSchema.methods.generateAuthToken = function () {
 captainSchema.methods.comparePassword = async function (password) {
   return await compare(password, this.password);
 };
+
 captainSchema.statics.hashPassword = async function (password) {
   return await hash(password, 10);
 };
+
 const captainModel = model("captain", captainSchema);
 export default captainModel;

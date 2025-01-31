@@ -11,7 +11,7 @@ const createCaptain = async ({
   vehicleType,
 }) => {
   if (
-    !firstname || 
+    !firstname ||
     !email ||
     !password ||
     !color ||
@@ -38,4 +38,5 @@ const createCaptain = async ({
 
   return captain;
 };
+
 export default { createCaptain };

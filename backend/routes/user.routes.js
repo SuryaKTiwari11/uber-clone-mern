@@ -3,7 +3,7 @@ import {
   registerUser,
   loginUser,
   getUserProfile,
-  logoutUser, 
+  logoutUser,
 } from "../controllers/user.controller.js";
 import { body } from "express-validator";
 import { authUser } from "../middlewares/auth.middleware.js";
@@ -13,10 +13,10 @@ router.post(
   "/register",
   [
     body("email").isEmail().withMessage("Invalid Email"),
-    body("fullname.firstName")
+    body("fullname.firstname")
       .isLength({ min: 3 })
       .withMessage("First name must be at least 3 characters long"),
-    body("fullname.lastName")
+    body("fullname.lastname")
       .optional()
       .isLength({ min: 3 })
       .withMessage("Last name must be at least 3 characters long"),
@@ -39,6 +39,6 @@ router.post(
 );
 
 router.get("/profile", authUser, getUserProfile);
-router.get('logout',authUser,logoutUser);
+router.post("/logout", authUser, logoutUser);
 
 export default router;

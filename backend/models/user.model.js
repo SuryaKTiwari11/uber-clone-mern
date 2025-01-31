@@ -43,6 +43,7 @@ userSchema.methods.generateAuthToken = function () {
   return token;
 };
 
+// The generated token is then returned by the method.
 userSchema.methods.comparePassword = async function (password) {
   return await compare(password, this.password);
 };

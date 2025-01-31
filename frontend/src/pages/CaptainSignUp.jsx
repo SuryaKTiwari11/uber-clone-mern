@@ -60,15 +60,15 @@ const CaptainSignUp = () => {
   };
 
   return (
-    <div className="h-screen flex flex-col items-center justify-center bg-[#ffffff] p-3 max-h-xs   ">
-      <div className="bg-white p-4 rounded-md shadow-lg w-full max-w-xs"> 
-        <h1 className="text-xl font-bold mb-4 text-center">Captain Sign Up</h1>
+    <div className="flex flex-col items-center justify-center bg-[#ffffff] p-6">
+      <div className="bg-white p-8 rounded-md shadow-lg w-full h-full max-w-lg">
+      <h1 className="text-2xl font-bold mb-6 text-center">Captain Sign Up</h1>
         <form onSubmit={handleSubmit}>
-          <div className="mb-3">
-            <label className="block text-lg font-semibold mb-1">
+          <div className="mb-6">
+            <label className="block text-lg font-semibold mb-2">
               What is your name?
             </label>
-            <div className="flex gap-2">
+            <div className="flex gap-4">
               <Input
                 required
                 value={firstName}
@@ -87,8 +87,8 @@ const CaptainSignUp = () => {
               />
             </div>
           </div>
-          <div className="mb-3">
-            <label className="block text-lg font-semibold mb-1">Email</label>
+          <div className="mb-6">
+            <label className="block text-lg font-semibold mb-2">Email</label>
             <Input
               required
               value={email}
@@ -98,8 +98,8 @@ const CaptainSignUp = () => {
               placeholder="email@example.com"
             />
           </div>
-          <div className="mb-3">
-            <label className="block text-lg font-semibold mb-1">Password</label>
+          <div className="mb-6">
+            <label className="block text-lg font-semibold mb-2">Password</label>
             <Input
               required
               value={password}
@@ -109,9 +109,9 @@ const CaptainSignUp = () => {
               placeholder="password"
             />
           </div>
-          <div className="flex gap-2 mb-3">
+          <div className="flex gap-4 mb-6">
             <div className="w-1/2">
-              <label className="block text-lg font-semibold mb-1">
+              <label className="block text-lg font-semibold mb-2">
                 Vehicle Color
               </label>
               <Input
@@ -124,7 +124,7 @@ const CaptainSignUp = () => {
               />
             </div>
             <div className="w-1/2">
-              <label className="block text-lg font-semibold mb-1">
+              <label className="block text-lg font-semibold mb-2">
                 Vehicle Plate
               </label>
               <Input
@@ -137,9 +137,9 @@ const CaptainSignUp = () => {
               />
             </div>
           </div>
-          <div className="flex gap-2 mb-3">
+          <div className="flex gap-4 mb-6">
             <div className="w-1/2">
-              <label className="block text-lg font-semibold mb-1">
+              <label className="block text-lg font-semibold mb-2">
                 Capacity
               </label>
               <Input
@@ -152,7 +152,7 @@ const CaptainSignUp = () => {
               />
             </div>
             <div className="w-1/2">
-              <label className="block text-lg font-semibold mb-1">Type</label>
+              <label className="block text-lg font-semibold mb-2">Type</label>
               <select
                 required
                 value={vehicleType}
@@ -167,7 +167,7 @@ const CaptainSignUp = () => {
               </select>
             </div>
           </div>
-          <Button className="w-full mb-3" type="submit">
+          <Button className="w-full mb-6" type="submit">
             Sign Up
           </Button>
           <p className="text-center font-semibold text-md">
@@ -180,7 +180,7 @@ const CaptainSignUp = () => {
       </div>
       <Link
         to="/user-signup"
-        className="bg-purple-500 flex items-center justify-center font-semibold text-white py-2 rounded-md mt-3 w-full max-w-xs"
+        className="bg-purple-500 flex items-center justify-center font-semibold text-white py-3 rounded-md mt-6 w-full max-w-lg"
       >
         Sign Up As User
       </Link>
