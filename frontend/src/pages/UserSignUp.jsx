@@ -1,5 +1,5 @@
-import React, { useContext, useState } from "react";
-import Logo from "../assets/Logo.png";
+import { useContext, useState } from "react";
+
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 import { UserDataContext } from "../context/UserContext.jsx";
@@ -8,12 +8,12 @@ import { Input } from "../components/ui/Input";
 
 const UserSignUp = () => {
   const [formData, setFormData] = useState({
-    firstName: "",
-    lastName: "",
+    firstname: "",
+    lastname: "",
     email: "",
     password: "",
   });
-  const { user, setUser } = useContext(UserDataContext);
+  const { setUser } = useContext(UserDataContext);
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -27,22 +27,25 @@ const UserSignUp = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const newUser = {
-      fullName: {
-        firstName: formData.firstName,
-        lastName: formData.lastName,
+      fullname: {
+        firstname: formData.firstname,
+        lastname: formData.lastname,
       },
       email: formData.email,
       password: formData.password,
     };
+
+    console.log("Request Payload:", newUser);
 
     try {
       const response = await axios.post(
         `${import.meta.env.VITE_BASE_URL}/users/register`,
         newUser
       );
-      if (response.status === 201) {
+      console.log(response);
+      if (response.status === 200 && response.data) {
         setUser(response.data.user);
-        localStorage.setItem("token", JSON.stringify(response.data.token));
+        localStorage.setItem("token", response.data.token);
         navigate("/home");
       }
     } catch (error) {
@@ -50,8 +53,8 @@ const UserSignUp = () => {
     }
 
     setFormData({
-      firstName: "",
-      lastName: "",
+      firstname: "",
+      lastname: "",
       email: "",
       password: "",
     });
@@ -69,8 +72,8 @@ const UserSignUp = () => {
             <div className="flex gap-2">
               <Input
                 required
-                name="firstName"
-                value={formData.firstName}
+                name="firstname"
+                value={formData.firstname}
                 onChange={handleChange}
                 type="text"
                 className="w-1/2"
@@ -78,8 +81,8 @@ const UserSignUp = () => {
               />
               <Input
                 required
-                name="lastName"
-                value={formData.lastName}
+                name="lastname"
+                value={formData.lastname}
                 onChange={handleChange}
                 type="text"
                 className="w-1/2"
@@ -116,14 +119,14 @@ const UserSignUp = () => {
           </Button>
           <p className="text-center font-semibold text-md">
             Already have an account?{" "}
-            <Link to="/user-login" className="text-blue-500">
+            <Link to="/users-login" className="text-blue-500">
               Login
             </Link>
           </p>
         </form>
       </div>
       <Link
-        to="/captain-signup"
+        to="/captains-signup"
         className="bg-green-500 flex items-center justify-center font-semibold text-white py-2 rounded-md mt-3 w-full max-w-md"
       >
         Sign In As Captain

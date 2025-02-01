@@ -1,68 +1,83 @@
-import React, { useContext, useState } from "react";
-import Logo from "../assets/Logo.png";
+import { useContext, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { CaptainDataContext } from "../context/CaptainContext";
 import axios from "axios";
-import { Button } from "../components/ui/Button"; // Assuming Button is a custom component
-import { Input } from "../components/ui/Input"; // Assuming Input is a custom component
+import { Button } from "../components/ui/Button";
+import { Input } from "../components/ui/Input";
 
 const CaptainSignUp = () => {
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [vehicleColor, setVehicleColor] = useState("");
-  const [vehiclePlate, setVehiclePlate] = useState("");
-  const [vehicleCapacity, setVehicleCapacity] = useState("");
-  const [vehicleType, setVehicleType] = useState("");
+  const [formData, setFormData] = useState({
+    firstName: "",
+    lastName: "",
+    email: "",
+    password: "",
+    vehicleColor: "",
+    vehiclePlate: "",
+    vehicleCapacity: "",
+    vehicleType: "",
+  });
 
-  const { captain, setCaptain } = useContext(CaptainDataContext);
+  const { setCaptain } = useContext(CaptainDataContext);
   const navigate = useNavigate();
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     const CaptainData = {
       fullName: {
-        firstName: firstName,
-        lastName: lastName,
+        firstname: formData.firstname,
+        lastname: formData.lastname,
       },
-      email: email,
-      password: password,
+      email: formData.email,
+      password: formData.password,
       vehicle: {
-        color: vehicleColor,
-        plate: vehiclePlate,
-        capacity: vehicleCapacity,
-        type: vehicleType,
+        color: formData.vehicleColor,
+        plate: formData.vehiclePlate,
+        capacity: formData.vehicleCapacity,
+        type: formData.vehicleType,
       },
     };
+
+    console.log("Request Payload:", CaptainData);
+
     try {
       const response = await axios.post(
         `${import.meta.env.VITE_BASE_URL}/captains/register`,
         CaptainData
       );
+      console.log(response);
       if (response.status === 201) {
         setCaptain(response.data.captain);
-        localStorage.setItem("token", JSON.stringify(response.data.token));
+        localStorage.setItem("token", response.data.token);
         navigate("/home");
       }
     } catch (error) {
       console.error("Error during sign up:", error);
     }
-    setCaptain(CaptainData);
-    setFirstName("");
-    setLastName("");
-    setEmail("");
-    setPassword("");
-    setVehicleColor("");
-    setVehiclePlate("");
-    setVehicleCapacity("");
-    setVehicleType("");
+
+    setFormData({
+      firstName: "",
+      lastName: "",
+      email: "",
+      password: "",
+      vehicleColor: "",
+      vehiclePlate: "",
+      vehicleCapacity: "",
+      vehicleType: "",
+    });
   };
 
   return (
     <div className="flex flex-col items-center justify-center bg-[#ffffff] p-6">
       <div className="bg-white p-8 rounded-md shadow-lg w-full h-full max-w-lg">
-      <h1 className="text-2xl font-bold mb-6 text-center">Captain Sign Up</h1>
+        <h1 className="text-2xl font-bold mb-6 text-center">Captain Sign Up</h1>
         <form onSubmit={handleSubmit}>
           <div className="mb-6">
             <label className="block text-lg font-semibold mb-2">
@@ -71,16 +86,18 @@ const CaptainSignUp = () => {
             <div className="flex gap-4">
               <Input
                 required
-                value={firstName}
-                onChange={(e) => setFirstName(e.target.value)}
+                name="firstName"
+                value={formData.firstName}
+                onChange={handleChange}
                 type="text"
                 className="w-1/2"
                 placeholder="First Name"
               />
               <Input
                 required
-                value={lastName}
-                onChange={(e) => setLastName(e.target.value)}
+                name="lastName"
+                value={formData.lastName}
+                onChange={handleChange}
                 type="text"
                 className="w-1/2"
                 placeholder="Last Name"
@@ -91,8 +108,9 @@ const CaptainSignUp = () => {
             <label className="block text-lg font-semibold mb-2">Email</label>
             <Input
               required
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              name="email"
+              value={formData.email}
+              onChange={handleChange}
               type="email"
               className="w-full"
               placeholder="email@example.com"
@@ -102,8 +120,9 @@ const CaptainSignUp = () => {
             <label className="block text-lg font-semibold mb-2">Password</label>
             <Input
               required
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              name="password"
+              value={formData.password}
+              onChange={handleChange}
               type="password"
               className="w-full"
               placeholder="password"
@@ -116,8 +135,9 @@ const CaptainSignUp = () => {
               </label>
               <Input
                 required
-                value={vehicleColor}
-                onChange={(e) => setVehicleColor(e.target.value)}
+                name="vehicleColor"
+                value={formData.vehicleColor}
+                onChange={handleChange}
                 type="text"
                 className="w-full"
                 placeholder="Vehicle Color"
@@ -129,8 +149,9 @@ const CaptainSignUp = () => {
               </label>
               <Input
                 required
-                value={vehiclePlate}
-                onChange={(e) => setVehiclePlate(e.target.value)}
+                name="vehiclePlate"
+                value={formData.vehiclePlate}
+                onChange={handleChange}
                 type="text"
                 className="w-full"
                 placeholder="Vehicle Plate"
@@ -144,8 +165,9 @@ const CaptainSignUp = () => {
               </label>
               <Input
                 required
-                value={vehicleCapacity}
-                onChange={(e) => setVehicleCapacity(e.target.value)}
+                name="vehicleCapacity"
+                value={formData.vehicleCapacity}
+                onChange={handleChange}
                 type="number"
                 className="w-full"
                 placeholder="Vehicle Capacity"
@@ -155,8 +177,9 @@ const CaptainSignUp = () => {
               <label className="block text-lg font-semibold mb-2">Type</label>
               <select
                 required
-                value={vehicleType}
-                onChange={(e) => setVehicleType(e.target.value)}
+                name="vehicleType"
+                value={formData.vehicleType}
+                onChange={handleChange}
                 className="bg-gray-200 rounded px-3 py-2 border border-gray-300 w-full text-lg"
               >
                 <option value="">Select Vehicle Type</option>
@@ -172,14 +195,14 @@ const CaptainSignUp = () => {
           </Button>
           <p className="text-center font-semibold text-md">
             Already have an account?{" "}
-            <Link to="/captain-login" className="text-blue-500">
+            <Link to="/captains-login" className="text-blue-500">
               Login
             </Link>
           </p>
         </form>
       </div>
       <Link
-        to="/user-signup"
+        to="/users-signup"
         className="bg-purple-500 flex items-center justify-center font-semibold text-white py-3 rounded-md mt-6 w-full max-w-lg"
       >
         Sign Up As User

@@ -93,7 +93,7 @@ const logoutCaptain = async (req, res) => {
   if (!token) {
     return res.status(400).json({ message: "No token provided" });
   } //if the token is not provided we return a message
-  await blacklistTokenModel.create({ token }); 
+  await blacklistTokenModel.create({ token });
   //create a blacklist token using the token
   res.clearCookie("token"); //clear the token from the cookie
   res.status(200).json({ message: "Logged out successfully" });

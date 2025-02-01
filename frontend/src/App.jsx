@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Routes, Route } from "react-router-dom";
 import Start from "./pages/Start";
@@ -11,12 +10,14 @@ import UserProtectedWrapper from "./pages/UserProtectWrapper";
 import UserLogout from "./pages/UserLogout";
 import { Footerdemo } from "./components/ui/footer-section";
 import Navbar from "./pages/Navbar";
+import Nothing from "./pages/Nothing";
 
 const App = () => {
   return (
     <div>
       <Navbar />
       <Routes>
+        <Route path="*" element={<Nothing />} />
         <Route path="/" element={<Start />} />
         <Route path="/captains-login" element={<CaptainLogin />} />
         <Route path="/captains-signup" element={<CaptainSignUp />} />
@@ -31,7 +32,7 @@ const App = () => {
           }
         />
         <Route
-          path="/user /logout"
+          path="/users/logout"
           element={
             <UserProtectedWrapper>
               <UserLogout />
@@ -39,8 +40,10 @@ const App = () => {
           }
         />
       </Routes>
-      <div className="        
-       bottom-0 w-full">
+      <div
+        className="        
+       bottom-0 w-full"
+      >
         <Footerdemo />
       </div>
     </div>

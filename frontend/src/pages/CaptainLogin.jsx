@@ -1,18 +1,51 @@
-import React, { useState } from "react";
-import Logo from "../assets/Logo.png";
-import { Link } from "react-router-dom";
-import {Button} from "../components/ui/Button"; // Assuming Button is a custom component
-import {Input} from "../components/ui/Input"; // Assuming Input is a custom component
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+
+import axios from "axios";
+import { Button } from "../components/ui/Button";
+import { Input } from "../components/ui/Input";
 
 const CaptainLogin = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [formData, setFormData] = useState({
+    email: "",
+    password: "",
+  });
+  const navigate = useNavigate();
+  
 
-  const handleSubmit = (e) => {
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(`Email: ${email} Password: ${password} Submitted Successfully`);
-    setEmail("");
-    setPassword("");
+    const newCaptain = {
+      email: formData.email,
+      password: formData.password,
+    };
+
+    console.log(newCaptain);
+    try {
+      const response = await axios.post(
+        `${import.meta.env.VITE_BASE_URL}/captains/login`,
+        newCaptain
+      );
+      if (response.status === 200 && response.data) {
+        localStorage.setItem("token",response.data.token);
+        navigate("/home");
+      }
+    } catch (error) {
+      console.error("Error during login:", error);
+    }
+
+    setFormData({
+      email: "",
+      password: "",
+    });
   };
 
   return (
@@ -21,43 +54,46 @@ const CaptainLogin = () => {
         <h1 className="text-xl font-bold mb-4 text-center">Captain Login</h1>
         <form onSubmit={handleSubmit}>
           <div className="mb-3">
-            <label className="block text-lg font-semibold mb-1">What is your email?</label>
+            <label className="block text-lg font-semibold mb-1">
+              What is your email?
+            </label>
             <Input
               required
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              name="email"
+              value={formData.email}
+              onChange={handleChange}
               type="email"
               className="w-full"
               placeholder="email@example.com"
             />
           </div>
           <div className="mb-3">
-            <label className="block font-semibold text-lg mb-1">Enter Password</label>
+            <label className="block font-semibold text-lg mb-1">
+              Enter Password
+            </label>
             <Input
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              required
+              name="password"
+              value={formData.password}
+              onChange={handleChange}
               type="password"
               placeholder="password"
               className="w-full"
-              required
             />
           </div>
-          <Button
-            className="w-full mb-3"
-            type="submit"
-          >
+          <Button className="w-full mb-3" type="submit">
             Login
           </Button>
           <p className="text-center font-semibold text-md">
-            New Here? Create account {" "}
-            <Link to="/captain-signup" className="text-blue-500">
+            New Here? Create account{" "}
+            <Link to="/captains-signup" className="text-blue-500">
               Sign Up
             </Link>
           </p>
         </form>
       </div>
       <Link
-        to="/user-login"
+        to="/users-login"
         className="bg-purple-500 flex items-center justify-center font-semibold text-white py-2 rounded-md mt-3 w-full max-w-md"
       >
         Sign In As User
