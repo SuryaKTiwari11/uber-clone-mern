@@ -1,5 +1,4 @@
 import axios from "axios";
-
 import { useNavigate } from "react-router-dom";
 
 const UserLogout = () => {
@@ -17,6 +16,9 @@ const UserLogout = () => {
         localStorage.removeItem("token");
         navigate("/users-login");
       }
+    })
+    .catch((error) => {
+      console.error("Error during logout:", error);
     });
 
   return (

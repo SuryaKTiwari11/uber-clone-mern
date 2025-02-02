@@ -1,4 +1,5 @@
-import { useContext, useState } from "react";
+import { useContext, useState, useEffect, useRef } from "react";
+import gsap from "gsap";
 
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
@@ -15,6 +16,71 @@ const UserSignUp = () => {
   });
   const { setUser } = useContext(UserDataContext);
   const navigate = useNavigate();
+
+  const formRef = useRef(null);
+  const titleRef = useRef(null);
+  const captainButtonRef = useRef(null);
+
+  useEffect(() => {
+    // Initial setup
+    gsap.set([formRef.current, titleRef.current, captainButtonRef.current], {
+      opacity: 0,
+      y: 20,
+    });
+
+    // Entrance animation timeline
+    const tl = gsap.timeline({ defaults: { ease: "power2.out" } });
+
+    tl.to(titleRef.current, {
+      opacity: 1,
+      y: 0,
+      duration: 0.6,
+    })
+      .to(
+        formRef.current,
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.6,
+        },
+        "-=0.3"
+      )
+      .to(
+        captainButtonRef.current,
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.6,
+        },
+        "-=0.3"
+      );
+
+    // Success animation for form submission
+    const handleSuccess = () => {
+      gsap.to(formRef.current, {
+        y: -20,
+        opacity: 0,
+        duration: 0.4,
+      });
+    };
+
+    // Error animation
+    const handleError = () => {
+      gsap.to(formRef.current, {
+        x: [-10, 10, -10, 10, 0],
+        duration: 0.4,
+      });
+    };
+
+    return () => {
+      // Cleanup animations
+      gsap.killTweensOf([
+        formRef.current,
+        titleRef.current,
+        captainButtonRef.current,
+      ]);
+    };
+  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -43,13 +109,24 @@ const UserSignUp = () => {
         newUser
       );
       console.log(response);
-      if (response.status === 200 && response.data) {
-        setUser(response.data.user);
-        localStorage.setItem("token", response.data.token);
-        navigate("/home");
+      if (response.status === 201 && response.data) {
+        gsap.to(formRef.current, {
+          y: -20,
+          opacity: 0,
+          duration: 0.4,
+          onComplete: () => {
+            setUser(response.data.user);
+            localStorage.setItem("token", response.data.token);
+            navigate("/home");
+          },
+        });
       }
     } catch (error) {
       console.error("Error during sign up:", error);
+      gsap.to(formRef.current, {
+        x: [-10, 10, -10, 10, 0],
+        duration: 0.4,
+      });
     }
 
     setFormData({
@@ -62,8 +139,13 @@ const UserSignUp = () => {
 
   return (
     <div className="h-screen flex flex-col items-center justify-center bg-[#ffffff] p-3">
-      <div className="bg-white p-4 rounded-md shadow-lg w-full max-w-md">
-        <h1 className="text-xl font-bold mb-4 text-center">User Sign Up</h1>
+      <div
+        ref={formRef}
+        className="bg-white p-4 rounded-md shadow-lg w-full max-w-md"
+      >
+        <h1 ref={titleRef} className="text-xl font-bold mb-4 text-center">
+          User Sign Up
+        </h1>
         <form onSubmit={handleSubmit}>
           <div className="mb-3">
             <label className="block text-lg font-semibold mb-1">
@@ -126,10 +208,11 @@ const UserSignUp = () => {
         </form>
       </div>
       <Link
+        ref={captainButtonRef}
         to="/captains-signup"
-        className="bg-green-500 flex items-center justify-center font-semibold text-white py-2 rounded-md mt-3 w-full max-w-md"
+        className="bg-green-500 hover:bg-green-600 transition-all duration-300 flex items-center justify-center font-semibold text-white py-2 rounded-md mt-3 w-full max-w-md"
       >
-        Sign In As Captain
+        Sign Up As Captain
       </Link>
     </div>
   );

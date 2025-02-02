@@ -33,10 +33,10 @@ function Footerdemo() {
   }, [isDarkMode]);
 
   return (
-    <footer className="relative border-t bg-white text-zinc-950 transition-colors duration-300 dark:bg-zinc-950 dark:text-zinc-50">
+    <footer className="relative border-t bg-white text-zinc-950 transition-all duration-500 ease-in-out dark:bg-zinc-950 dark:text-zinc-50">
       <div className="container mx-auto px-4 py-12 md:px-6 lg:px-8">
         <div className="grid gap-12 md:grid-cols-2 lg:grid-cols-4">
-          <div className="relative">
+          <div className="relative transform transition-all duration-300 hover:translate-y-[-5px]">
             <h2 className="mb-4 text-3xl font-bold tracking-tight">
               Stay Connected
             </h2>
@@ -47,64 +47,64 @@ function Footerdemo() {
               <Input
                 type="email"
                 placeholder="Enter your email"
-                className="pr-12 backdrop-blur-sm"
+                className="pr-12 backdrop-blur-sm transition-all duration-300 hover:shadow-md"
               />
               <Button
                 type="submit"
                 size="icon"
-                className="absolute right-1 top-1 h-8 w-8 rounded-full bg-zinc-900 text-zinc-50 transition-transform hover:scale-105 dark:bg-zinc-50 dark:text-zinc-900"
+                className="absolute right-1 top-1 h-8 w-8 rounded-full bg-zinc-900 text-zinc-50 transition-all duration-300 hover:scale-110 hover:shadow-lg dark:bg-zinc-50 dark:text-zinc-900"
               >
                 <Send className="h-4 w-4" />
                 <span className="sr-only">Subscribe</span>
               </Button>
             </form>
-            <div className="absolute -right-4 top-0 h-24 w-24 rounded-full bg-zinc-900/10 blur-2xl dark:bg-zinc-50/10" />
+            <div className="absolute -right-4 top-0 h-24 w-24 rounded-full bg-zinc-900/10 blur-2xl transition-all duration-500 dark:bg-zinc-50/10" />
           </div>
-          <div>
+          <div className="transform transition-all duration-300 hover:translate-y-[-5px]">
             <h3 className="mb-4 text-lg font-semibold">Quick Links</h3>
             <nav className="space-y-2 text-sm">
               <a
                 href="#"
-                className="block transition-colors hover:text-zinc-900 dark:hover:text-zinc-50"
+                className="block transition-all duration-200 hover:pl-2 hover:text-zinc-900 dark:hover:text-zinc-50"
               >
                 Home
               </a>
               <a
                 href="#"
-                className="block transition-colors hover:text-zinc-900 dark:hover:text-zinc-50"
+                className="block transition-all duration-200 hover:pl-2 hover:text-zinc-900 dark:hover:text-zinc-50"
               >
                 About Us
               </a>
               <a
                 href="#"
-                className="block transition-colors hover:text-zinc-900 dark:hover:text-zinc-50"
+                className="block transition-all duration-200 hover:pl-2 hover:text-zinc-900 dark:hover:text-zinc-50"
               >
                 Services
               </a>
               <a
                 href="#"
-                className="block transition-colors hover:text-zinc-900 dark:hover:text-zinc-50"
+                className="block transition-all duration-200 hover:pl-2 hover:text-zinc-900 dark:hover:text-zinc-50"
               >
                 Products
               </a>
               <a
                 href="#"
-                className="block transition-colors hover:text-zinc-900 dark:hover:text-zinc-50"
+                className="block transition-all duration-200 hover:pl-2 hover:text-zinc-900 dark:hover:text-zinc-50"
               >
                 Contact
               </a>
             </nav>
           </div>
-          <div>
+          <div className="transform transition-all duration-300 hover:translate-y-[-5px]">
             <h3 className="mb-4 text-lg font-semibold">Contact Us</h3>
             <address className="space-y-2 text-sm not-italic">
-              <p>123 Innovation Street</p>
-              <p>Tech City, TC 12345</p>
-              <p>Phone: (123) 456-7890</p>
-              <p>Email: hello@example.com</p>
+              <p className="transition-all duration-200 hover:pl-2">123 Innovation Street</p>
+              <p className="transition-all duration-200 hover:pl-2">Tech City, TC 12345</p>
+              <p className="transition-all duration-200 hover:pl-2">Phone: (123) 456-7890</p>
+              <p className="transition-all duration-200 hover:pl-2">Email: hello@example.com</p>
             </address>
           </div>
-          <div className="relative">
+          <div className="relative transform transition-all duration-300 hover:translate-y-[-5px]">
             <h3 className="mb-4 text-lg font-semibold">Follow Us</h3>
             <div className="mb-6 flex space-x-4">
               <TooltipProvider>
@@ -113,7 +113,7 @@ function Footerdemo() {
                     <Button
                       variant="outline"
                       size="icon"
-                      className="rounded-full"
+                      className="rounded-full transition-all duration-300 hover:rotate-[360deg] hover:scale-110"
                     >
                       <Facebook className="h-4 w-4" />
                       <span className="sr-only">Facebook</span>
@@ -130,7 +130,7 @@ function Footerdemo() {
                     <Button
                       variant="outline"
                       size="icon"
-                      className="rounded-full"
+                      className="rounded-full transition-all duration-300 hover:rotate-[360deg] hover:scale-110"
                     >
                       <Twitter className="h-4 w-4" />
                       <span className="sr-only">Twitter</span>
@@ -147,7 +147,7 @@ function Footerdemo() {
                     <Button
                       variant="outline"
                       size="icon"
-                      className="rounded-full"
+                      className="rounded-full transition-all duration-300 hover:rotate-[360deg] hover:scale-110"
                     >
                       <Instagram className="h-4 w-4" />
                       <span className="sr-only">Instagram</span>
@@ -164,7 +164,7 @@ function Footerdemo() {
                     <Button
                       variant="outline"
                       size="icon"
-                      className="rounded-full"
+                      className="rounded-full transition-all duration-300 hover:rotate-[360deg] hover:scale-110"
                     >
                       <Linkedin className="h-4 w-4" />
                       <span className="sr-only">LinkedIn</span>
@@ -177,13 +177,14 @@ function Footerdemo() {
               </TooltipProvider>
             </div>
             <div className="flex items-center space-x-2">
-              <Sun className="h-4 w-4" />
+              <Sun className="h-4 w-4 transition-transform duration-300 hover:rotate-180" />
               <Switch
                 id="dark-mode"
                 checked={isDarkMode}
                 onCheckedChange={setIsDarkMode}
+                className="transition-transform duration-300 hover:scale-110"
               />
-              <Moon className="h-4 w-4" />
+              <Moon className="h-4 w-4 transition-transform duration-300 hover:rotate-180" />
               <Label htmlFor="dark-mode" className="sr-only">
                 Toggle dark mode
               </Label>
@@ -191,25 +192,25 @@ function Footerdemo() {
           </div>
         </div>
         <div className="mt-12 flex flex-col items-center justify-between gap-4 border-t pt-8 text-center md:flex-row">
-          <p className="text-sm text-zinc-500 dark:text-zinc-400">
+          <p className="text-sm text-zinc-500 transition-colors duration-300 dark:text-zinc-400">
             © 2024 Your Company. All rights reserved.
           </p>
           <nav className="flex gap-4 text-sm">
             <a
               href="#"
-              className="transition-colors hover:text-zinc-900 dark:hover:text-zinc-50"
+              className="transition-all duration-200 hover:scale-105 hover:text-zinc-900 dark:hover:text-zinc-50"
             >
               Privacy Policy
             </a>
             <a
               href="#"
-              className="transition-colors hover:text-zinc-900 dark:hover:text-zinc-50"
+              className="transition-all duration-200 hover:scale-105 hover:text-zinc-900 dark:hover:text-zinc-50"
             >
               Terms of Service
             </a>
             <a
               href="#"
-              className="transition-colors hover:text-zinc-900 dark:hover:text-zinc-50"
+              className="transition-all duration-200 hover:scale-105 hover:text-zinc-900 dark:hover:text-zinc-50"
             >
               Cookie Settings
             </a>

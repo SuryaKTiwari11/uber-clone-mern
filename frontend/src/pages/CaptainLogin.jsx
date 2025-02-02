@@ -1,17 +1,69 @@
-import { useState } from "react";
+import { useState, useContext, useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
-
 import axios from "axios";
 import { Button } from "../components/ui/Button";
 import { Input } from "../components/ui/Input";
+import { CaptainDataContext } from "../context/CaptainContext";
+import gsap from "gsap";
 
 const CaptainLogin = () => {
+  const { setCaptain } = useContext(CaptainDataContext);
   const [formData, setFormData] = useState({
     email: "",
     password: "",
   });
   const navigate = useNavigate();
-  
+
+  const formRef = useRef(null);
+  const titleRef = useRef(null);
+  const userButtonRef = useRef(null);
+
+  useEffect(() => {
+    // Initial setup
+    gsap.set([formRef.current, titleRef.current, userButtonRef.current], {
+      opacity: 0,
+      y: 30,
+    });
+
+    // Entrance animation timeline
+    const tl = gsap.timeline();
+
+    tl.to(titleRef.current, {
+      opacity: 1,
+      y: 0,
+      duration: 0.8,
+      ease: "power3.out",
+    })
+      .to(formRef.current, {
+        opacity: 1,
+        y: 0,
+        duration: 0.8,
+        ease: "power2.out",
+      })
+      .to(userButtonRef.current, {
+        opacity: 1,
+        y: 0,
+        duration: 0.6,
+        ease: "back.out(1.7)",
+      });
+
+    // Add hover animations for the user button
+    userButtonRef.current.addEventListener("mouseenter", () => {
+      gsap.to(userButtonRef.current, {
+        scale: 1.05,
+        duration: 0.3,
+        ease: "power2.out",
+      });
+    });
+
+    userButtonRef.current.addEventListener("mouseleave", () => {
+      gsap.to(userButtonRef.current, {
+        scale: 1,
+        duration: 0.3,
+        ease: "power2.out",
+      });
+    });
+  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -35,8 +87,9 @@ const CaptainLogin = () => {
         newCaptain
       );
       if (response.status === 200 && response.data) {
-        localStorage.setItem("token",response.data.token);
-        navigate("/home");
+        setCaptain(response.data.captain);
+        localStorage.setItem("token", response.data.token);
+        navigate("/captains-home");
       }
     } catch (error) {
       console.error("Error during login:", error);
@@ -51,8 +104,8 @@ const CaptainLogin = () => {
   return (
     <div className="h-screen flex flex-col items-center justify-center bg-[#ffffff] p-3">
       <div className="bg-white p-4 rounded-md shadow-lg w-full max-w-md">
-        <h1 className="text-xl font-bold mb-4 text-center">Captain Login</h1>
-        <form onSubmit={handleSubmit}>
+        <h1 ref={titleRef} className="text-xl font-bold mb-4 text-center">Captain Login</h1>
+        <form ref={formRef} onSubmit={handleSubmit}>
           <div className="mb-3">
             <label className="block text-lg font-semibold mb-1">
               What is your email?
@@ -93,6 +146,7 @@ const CaptainLogin = () => {
         </form>
       </div>
       <Link
+        ref={userButtonRef}
         to="/users-login"
         className="bg-purple-500 flex items-center justify-center font-semibold text-white py-2 rounded-md mt-3 w-full max-w-md"
       >

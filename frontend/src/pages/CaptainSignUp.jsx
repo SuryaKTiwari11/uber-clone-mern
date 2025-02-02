@@ -1,9 +1,10 @@
-import { useContext, useState } from "react";
+import { useContext, useState, useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { CaptainDataContext } from "../context/CaptainContext";
 import axios from "axios";
 import { Button } from "../components/ui/Button";
 import { Input } from "../components/ui/Input";
+import gsap from "gsap";
 
 const CaptainSignUp = () => {
   const [formData, setFormData] = useState({
@@ -20,6 +21,67 @@ const CaptainSignUp = () => {
   const { setCaptain } = useContext(CaptainDataContext);
   const navigate = useNavigate();
 
+  const formRef = useRef(null);
+  const titleRef = useRef(null);
+  const userButtonRef = useRef(null);
+
+  useEffect(() => {
+    // Initial setup
+    gsap.set([formRef.current, titleRef.current, userButtonRef.current], {
+      opacity: 0,
+      y: 20,
+    });
+
+    // Entrance animation timeline
+    const tl = gsap.timeline({ defaults: { ease: "power2.out" } });
+
+    tl.to(titleRef.current, {
+      opacity: 1,
+      y: 0,
+      duration: 0.6,
+    })
+      .to(
+        formRef.current,
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.6,
+        },
+        "-=0.3"
+      )
+      .to(
+        userButtonRef.current,
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.6,
+        },
+        "-=0.3"
+      );
+
+    // Add hover animations for the user button
+    userButtonRef.current.addEventListener("mouseenter", () => {
+      gsap.to(userButtonRef.current, {
+        scale: 1.05,
+        duration: 0.3,
+        ease: "power2.out",
+      });
+    });
+
+    userButtonRef.current.addEventListener("mouseleave", () => {
+      gsap.to(userButtonRef.current, {
+        scale: 1,
+        duration: 0.3,
+        ease: "power2.out",
+      });
+    });
+
+    return () => {
+      // Cleanup animations
+      gsap.killTweensOf([formRef.current, titleRef.current, userButtonRef.current]);
+    };
+  }, []);
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prevData) => ({
@@ -30,60 +92,67 @@ const CaptainSignUp = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     const CaptainData = {
-      fullName: {
-        firstname: formData.firstname,
-        lastname: formData.lastname,
+      fullname: {
+        firstname: formData.firstName.trim().toLowerCase(),
+        lastname: formData.lastName.trim().toLowerCase(),
       },
-      email: formData.email,
+      email: formData.email.toLowerCase(),
       password: formData.password,
       vehicle: {
-        color: formData.vehicleColor,
+        color: formData.vehicleColor.toLowerCase(),
         plate: formData.vehiclePlate,
-        capacity: formData.vehicleCapacity,
-        type: formData.vehicleType,
+        capacity: Number(formData.vehicleCapacity),
+        vehicleType: formData.vehicleType.toLowerCase(),
       },
     };
 
-    console.log("Request Payload:", CaptainData);
-
     try {
+      console.log("Attempting to register with data:", CaptainData);
       const response = await axios.post(
         `${import.meta.env.VITE_BASE_URL}/captains/register`,
         CaptainData
       );
-      console.log(response);
-      if (response.status === 201) {
-        setCaptain(response.data.captain);
-        localStorage.setItem("token", response.data.token);
-        navigate("/home");
+      console.log("Response:", response.data);
+      if (response.status === 201 && response.data) {
+        // Success animation
+        gsap.to(formRef.current, {
+          y: -20,
+          opacity: 0,
+          duration: 0.4,
+          onComplete: () => {
+            setCaptain(response.data.captain);
+            localStorage.setItem("token", response.data.token);
+            navigate("/captains-home");
+          }
+        });
       }
     } catch (error) {
-      console.error("Error during sign up:", error);
+      console.error("Registration error details:", {
+        message: error.message,
+        status: error.response?.status,
+        data: error.response?.data,
+        requestData: CaptainData,
+      });
+      // Error shake animation
+      gsap.to(formRef.current, {
+        x: [-10, 10, -10, 10, 0],
+        duration: 0.4,
+      });
     }
-
-    setFormData({
-      firstName: "",
-      lastName: "",
-      email: "",
-      password: "",
-      vehicleColor: "",
-      vehiclePlate: "",
-      vehicleCapacity: "",
-      vehicleType: "",
-    });
   };
 
   return (
-    <div className="flex flex-col items-center justify-center bg-[#ffffff] p-6">
-      <div className="bg-white p-8 rounded-md shadow-lg w-full h-full max-w-lg">
-        <h1 className="text-2xl font-bold mb-6 text-center">Captain Sign Up</h1>
-        <form onSubmit={handleSubmit}>
-          <div className="mb-6">
-            <label className="block text-lg font-semibold mb-2">
+    <div className="h-full w-full flex flex-col items-center justify-center bg-[#ffffff] p-4">
+      <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
+        <h1 ref={titleRef} className="text-xl font-bold mb-4 text-center">Captain Sign Up</h1>
+        <form ref={formRef} onSubmit={handleSubmit} className="space-y-4">
+          <div>
+            <label className="block text-sm font-medium mb-1">
               What is your name?
             </label>
-            <div className="flex gap-4">
+            <div className="flex gap-2">
               <Input
                 required
                 name="firstName"
@@ -104,8 +173,9 @@ const CaptainSignUp = () => {
               />
             </div>
           </div>
-          <div className="mb-6">
-            <label className="block text-lg font-semibold mb-2">Email</label>
+
+          <div>
+            <label className="block text-sm font-medium mb-1">Email</label>
             <Input
               required
               name="email"
@@ -116,8 +186,9 @@ const CaptainSignUp = () => {
               placeholder="email@example.com"
             />
           </div>
-          <div className="mb-6">
-            <label className="block text-lg font-semibold mb-2">Password</label>
+
+          <div>
+            <label className="block text-sm font-medium mb-1">Password</label>
             <Input
               required
               name="password"
@@ -128,9 +199,10 @@ const CaptainSignUp = () => {
               placeholder="password"
             />
           </div>
-          <div className="flex gap-4 mb-6">
-            <div className="w-1/2">
-              <label className="block text-lg font-semibold mb-2">
+
+          <div className="grid grid-cols-2 gap-2">
+            <div>
+              <label className="block text-sm font-medium mb-1">
                 Vehicle Color
               </label>
               <Input
@@ -143,8 +215,8 @@ const CaptainSignUp = () => {
                 placeholder="Vehicle Color"
               />
             </div>
-            <div className="w-1/2">
-              <label className="block text-lg font-semibold mb-2">
+            <div>
+              <label className="block text-sm font-medium mb-1">
                 Vehicle Plate
               </label>
               <Input
@@ -158,52 +230,61 @@ const CaptainSignUp = () => {
               />
             </div>
           </div>
-          <div className="flex gap-4 mb-6">
-            <div className="w-1/2">
-              <label className="block text-lg font-semibold mb-2">
-                Capacity
-              </label>
+
+          <div className="grid grid-cols-2 gap-2">
+            <div>
+              <label className="block text-sm font-medium mb-1">Capacity</label>
               <Input
                 required
                 name="vehicleCapacity"
                 value={formData.vehicleCapacity}
                 onChange={handleChange}
                 type="number"
+                min="1"
                 className="w-full"
-                placeholder="Vehicle Capacity"
+                placeholder="Capacity"
               />
             </div>
-            <div className="w-1/2">
-              <label className="block text-lg font-semibold mb-2">Type</label>
+            <div>
+              <label className="block text-sm font-medium mb-1">Type</label>
               <select
                 required
                 name="vehicleType"
                 value={formData.vehicleType}
                 onChange={handleChange}
-                className="bg-gray-200 rounded px-3 py-2 border border-gray-300 w-full text-lg"
+                className="w-full h-10 px-3 rounded-md bg-gray-100 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-500"
               >
-                <option value="">Select Vehicle Type</option>
-                <option value="Sedan">Sedan</option>
-                <option value="SUV">SUV</option>
-                <option value="Hatchback">Hatchback</option>
-                <option value="Van">Van</option>
+                <option value="">Select Type</option>
+                <option value="car">Car</option>
+                <option value="bike">Bike</option>
+                <option value="truck">Truck</option>
+                <option value="van">Van</option>
+                <option value="bus">Bus</option>
+                <option value="motorcycle">Motorcycle</option>
+                <option value="other">Other</option>
               </select>
             </div>
           </div>
-          <Button className="w-full mb-6" type="submit">
+
+          <Button className="w-full" type="submit">
             Sign Up
           </Button>
-          <p className="text-center font-semibold text-md">
+
+          <p className="text-center text-sm">
             Already have an account?{" "}
-            <Link to="/captains-login" className="text-blue-500">
+            <Link
+              to="/captains-login"
+              className="text-purple-500 font-medium hover:text-purple-600"
+            >
               Login
             </Link>
           </p>
         </form>
       </div>
       <Link
+        ref={userButtonRef}
         to="/users-signup"
-        className="bg-purple-500 flex items-center justify-center font-semibold text-white py-3 rounded-md mt-6 w-full max-w-lg"
+        className="bg-purple-500 hover:bg-purple-600 text-white py-2 px-4 rounded-md mt-4 text-center w-full max-w-md text-sm font-medium transition-colors"
       >
         Sign Up As User
       </Link>

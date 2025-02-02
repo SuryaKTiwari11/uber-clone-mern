@@ -12,10 +12,15 @@ const router = Router();
 router.post(
   "/register",
   [
-    check("fullname.firstname")
+    check("fullname.firstName")
       .notEmpty()
-      .withMessage("First name is required"),
-    check("fullname.lastname").notEmpty().withMessage("Last name is required"),
+      .withMessage("First name is required")
+      .isLength({ min: 3 })
+      .withMessage("First name must be at least 3 characters long"),
+    check("fullname.lastName")
+      .optional()
+      .isLength({ min: 3 })
+      .withMessage("Last name must be at least 3 characters long"),
     check("email").isEmail().withMessage("Valid email is required"),
     check("password")
       .isLength({ min: 6 })
@@ -25,7 +30,9 @@ router.post(
     check("vehicle.capacity")
       .isNumeric()
       .withMessage("Vehicle capacity must be a number"),
-    check("vehicle.type").notEmpty().withMessage("Vehicle type is required"),
+    check("vehicle.vehicleType")
+      .notEmpty()
+      .withMessage("Vehicle type is required"),
   ],
   registerCaptain
 );

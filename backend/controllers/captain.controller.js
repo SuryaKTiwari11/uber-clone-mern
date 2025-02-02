@@ -4,42 +4,41 @@ import captainService from "../services/captain.service.js";
 import blacklistTokenModel from "../models/blacklistToken.model.js";
 
 const registerCaptain = async (req, res, next) => {
-  const errors = validationResult(req); //validate the request (req)
-
+  const errors = validationResult(req);
   if (!errors.isEmpty()) {
-    //if there are errors
-    return res.status(400).json({ errors: errors.array() }); //return the errors in json format
+    return res.status(400).json({ errors: errors.array() });
   }
-  //if there is no error we destructure the request body
+
   const { fullname, email, password, vehicle } = req.body;
 
-  //we check if the captain exist in the Database by email
-  const isCaptain = await captainModel.findOne({ email });
+  try {
+    // Check if captain exists
+    const isCaptain = await captainModel.findOne({ email });
+    if (isCaptain) {
+      return res.status(400).json({ message: "Captain already exists" });
+    }
 
-  //if the captain exist we return a message
-  if (isCaptain) {
-    return res.status(400).json({ message: "Captain already exists" });
+    // Hash password
+    const hashPassword = await captainModel.hashPassword(password);
+
+    // Create new captain
+    const captain = await captainService.createCaptain({
+      firstname: fullname.firstname,
+      lastname: fullname.lastname,
+      email,
+      password: hashPassword,
+      color: vehicle.color,
+      plate: vehicle.plate,
+      capacity: vehicle.capacity,
+      vehicleType: vehicle.vehicleType,
+    });
+
+    const token = captain.generateAuthToken();
+    res.status(201).json({ token, captain });
+  } catch (error) {
+    console.error("Registration error:", error);
+    res.status(400).json({ message: error.message });
   }
-
-  //if the captain does not exist we hash the password
-  //because we don't want to store the password in plain text
-  const hashPassword = await captainModel.hashPassword(password);
-
-  //we create the captain using the captainService
-  const captain = await captainService.createCaptain({
-    firstname: fullname.firstname,
-    lastname: fullname.lastname,
-    email,
-    password: hashPassword,
-    color: vehicle.color,
-    plate: vehicle.plate,
-    capacity: vehicle.capacity,
-    vehicleType: vehicle.type,
-  });
-
-  //we generate a token for the captain
-  const token = captain.generateAuthToken();
-  res.status(201).json({ token, captain });
 };
 
 const loginCaptain = async (req, res, next) => {
@@ -60,13 +59,13 @@ const loginCaptain = async (req, res, next) => {
   //This is necessary for comparing the provided password with the stored hashed password during login.
 
   if (!captain) {
-    return res.status(400).json({ message: "invalid email or password" });
+    return res.status(401).json({ message: "invalid email or password" });
   }
   //simply return a message if the captain does not exist
 
   //if the captain exist we compare the password
   //we call the comparePassword method on the captain object
-  const isMatch = await captain.comparePassword(password, captain.password);
+  const isMatch = await captain.comparePassword(password);
   if (!isMatch) {
     return res.status(400).json({ message: "invalid email or password" });
   }

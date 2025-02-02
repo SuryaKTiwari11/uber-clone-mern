@@ -19,20 +19,21 @@ const createCaptain = async ({
     !capacity ||
     !vehicleType
   ) {
-    throw new Error("All fields are required");
+    throw new Error("All required fields must be provided");
   }
+
   const captain = await captainModel.create({
     fullname: {
       firstName: firstname,
-      lastName: lastname,
+      lastName: lastname || "",
     },
     email,
     password,
     vehicle: {
-      color,
-      plate,
-      capacity,
-      vehicleType,
+      color: color,
+      plate: plate,
+      capacity: capacity,
+      vehicleType: vehicleType,
     },
   });
 
