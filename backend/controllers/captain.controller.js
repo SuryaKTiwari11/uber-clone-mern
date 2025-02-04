@@ -23,8 +23,8 @@ const registerCaptain = async (req, res, next) => {
 
     // Create new captain
     const captain = await captainService.createCaptain({
-      firstname: fullname.firstname,
-      lastname: fullname.lastname,
+      firstname: fullname.firstName,
+      lastname: fullname.lastName,
       email,
       password: hashPassword,
       color: vehicle.color,

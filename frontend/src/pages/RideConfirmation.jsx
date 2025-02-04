@@ -1,8 +1,58 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import PropTypes from "prop-types";
 import gsap from "gsap";
 import { Button } from "../components/ui/Button";
+import { UserDataContext } from "../context/UserContext";
+import React from "react";
+
+const vehicleIcons = {
+  bike: (
+    <svg
+      className="w-6 h-6"
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke="currentColor"
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth={2}
+        d="M5 17a2 2 0 104 0m-4 0a2 2 0 114 0m6-2a2 2 0 104 0m-4 0a2 2 0 114 0M7 11h10l-2-6H9L7 11z"
+      />
+    </svg>
+  ),
+  auto: (
+    <svg
+      className="w-6 h-6"
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke="currentColor"
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth={2}
+        d="M8 7h8m-8 5h8m-4-9v4m0 0l-4 4m4-4l4 4"
+      />
+    </svg>
+  ),
+  car: (
+    <svg
+      className="w-6 h-6"
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke="currentColor"
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth={2}
+        d="M5 10l2-6h10l2 6m0 0v6a2 2 0 01-2 2H7a2 2 0 01-2-2v-6m0 0h14"
+      />
+    </svg>
+  ),
+};
 
 const RideConfirmation = ({
   ride: propRide,
@@ -15,53 +65,53 @@ const RideConfirmation = ({
   const mapRef = useRef(null);
   const driverRef = useRef(null);
   const detailsRef = useRef(null);
+  const { user } = useContext(UserDataContext);
 
-  const [ride, setRide] = useState(propRide);
-  const [driver, setDriver] = useState(propDriver);
+  const [ride, setRide] = useState(
+    propRide || JSON.parse(localStorage.getItem("selectedRide")) || null
+  );
+  const [driver, setDriver] = useState(
+    propDriver || (ride && ride.driver) || null
+  );
 
   useEffect(() => {
+    // Only run animations if we have ride data
+    if (ride && driver) {
+      const tl = gsap.timeline({ defaults: { ease: "power2.out" } });
 
-    if (!propRide || !propDriver) {
-      const savedRide = JSON.parse(localStorage.getItem("selectedRide"));
-      if (!savedRide) {
-        navigate("/home");
-        return;
-      }
-      setRide(savedRide);
-      setDriver(savedRide.driver);
-    }
-
-    const tl = gsap.timeline({ defaults: { ease: "power2.out" } });
-
-    tl.from(containerRef.current, {
-      opacity: 0,
-      y: 20,
-      duration: 0.4,
-    })
-      .from(mapRef.current, {
+      tl.from(containerRef.current, {
         opacity: 0,
-        scale: 0.95,
+        y: 20,
         duration: 0.4,
       })
-      .from(driverRef.current, {
-        opacity: 0,
-        x: -20,
-        duration: 0.4,
-      })
-      .from(detailsRef.current, {
-        opacity: 0,
-        x: 20,
-        duration: 0.4,
+        .from(mapRef.current, {
+          opacity: 0,
+          scale: 0.95,
+          duration: 0.4,
+        })
+        .from(driverRef.current, {
+          opacity: 0,
+          x: -20,
+          duration: 0.4,
+        })
+        .from(detailsRef.current, {
+          opacity: 0,
+          x: 20,
+          duration: 0.4,
+        });
+
+      // Pulsing animation for driver location
+      gsap.to(".driver-marker", {
+        scale: 1.2,
+        repeat: -1,
+        yoyo: true,
+        duration: 1,
       });
-
-    // Pulsing animation for driver location
-    gsap.to(".driver-marker", {
-      scale: 1.2,
-      repeat: -1,
-      yoyo: true,
-      duration: 1,
-    });
-  }, [propRide, propDriver, navigate]);
+    } else {
+      // If no ride data, redirect to home
+      navigate("/home");
+    }
+  }, [ride, driver, navigate]);
 
   const handleBack = () => {
     if (onBack) {
@@ -75,14 +125,37 @@ const RideConfirmation = ({
     if (onConfirm) {
       onConfirm();
     } else {
-      // Handle final confirmation logic
-      console.log("Ride confirmed!");
-      localStorage.removeItem("selectedRide"); // Clean up
-      navigate("/home"); // Or navigate to a trip tracking page
+      // Store ride details for payment page
+      const rideDetails = {
+        pickup: "Your pickup location", // You should get this from your app state
+        drop: "Your drop location", // You should get this from your app state
+        distance: 5.2, // Calculate this based on locations
+        time: ride.time,
+        fare: parseFloat(ride.price.replace("₹", "")), // Convert price string to number
+      };
+
+      localStorage.setItem("rideDetails", JSON.stringify(rideDetails));
+      navigate("/payment");
     }
   };
 
-  if (!ride || !driver) return null;
+  // Add this function to render the icon safely
+  const renderIcon = (icon) => {
+    if (typeof icon === "string") {
+      return <span>{icon}</span>;
+    }
+    // If it's an SVG or other React element, clone it with a key
+    return React.cloneElement(icon, { key: "vehicle-icon" });
+  };
+
+  // Show loading state instead of null
+  if (!ride || !driver) {
+    return (
+      <div className="min-h-screen flex items-center justify-center p-4 bg-gray-50">
+        <div className="text-xl text-gray-600">Loading...</div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen flex items-center justify-center p-4 bg-gray-50">
@@ -156,11 +229,11 @@ const RideConfirmation = ({
           <div className="flex justify-between items-center p-4 bg-gray-50 rounded-lg">
             <div className="flex items-center">
               <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mr-4">
-                {ride.icon}
+                {ride.iconType && vehicleIcons[ride.iconType]}
               </div>
               <div>
                 <h3 className="font-semibold">{ride.name}</h3>
-                <p className="text-sm text-gray-600">{ride.vehicle.plate}</p>
+                <p className="text-sm text-gray-600">{ride.vehicle?.plate}</p>
               </div>
             </div>
             <div className="text-right">
@@ -183,19 +256,19 @@ const RideConfirmation = ({
 
 RideConfirmation.propTypes = {
   ride: PropTypes.shape({
-    name: PropTypes.string.isRequired,
-    icon: PropTypes.node.isRequired,
-    price: PropTypes.string.isRequired,
-    time: PropTypes.string.isRequired,
+    name: PropTypes.string,
+    iconType: PropTypes.string,
+    price: PropTypes.string,
+    time: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     vehicle: PropTypes.shape({
-      plate: PropTypes.string.isRequired,
-    }).isRequired,
+      plate: PropTypes.string,
+    }),
   }),
   driver: PropTypes.shape({
-    name: PropTypes.string.isRequired,
-    photo: PropTypes.string.isRequired,
-    rating: PropTypes.number.isRequired,
-    trips: PropTypes.number.isRequired,
+    name: PropTypes.string,
+    photo: PropTypes.string,
+    rating: PropTypes.number,
+    trips: PropTypes.number,
   }),
   onConfirm: PropTypes.func,
   onBack: PropTypes.func,

@@ -4,25 +4,59 @@ import { Button } from "../components/ui/Button";
 import RideConfirmation from "./RideConfirmation";
 import { useNavigate } from "react-router-dom";
 
+const vehicleIcons = {
+  bike: (
+    <svg
+      className="w-6 h-6"
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke="currentColor"
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth={2}
+        d="M5 17a2 2 0 104 0m-4 0a2 2 0 114 0m6-2a2 2 0 104 0m-4 0a2 2 0 114 0M7 11h10l-2-6H9L7 11z"
+      />
+    </svg>
+  ),
+  auto: (
+    <svg
+      className="w-6 h-6"
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke="currentColor"
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth={2}
+        d="M8 7h8m-8 5h8m-4-9v4m0 0l-4 4m4-4l4 4"
+      />
+    </svg>
+  ),
+  car: (
+    <svg
+      className="w-6 h-6"
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke="currentColor"
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth={2}
+        d="M5 10l2-6h10l2 6m0 0v6a2 2 0 01-2 2H7a2 2 0 01-2-2v-6m0 0h14"
+      />
+    </svg>
+  ),
+};
+
 const vehicles = [
   {
     id: "bike",
     name: "Bike",
-    icon: (
-      <svg
-        className="w-6 h-6"
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke="currentColor"
-      >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth={2}
-          d="M5 17a2 2 0 104 0m-4 0a2 2 0 114 0m6-2a2 2 0 104 0m-4 0a2 2 0 114 0M7 11h10l-2-6H9L7 11z"
-        />
-      </svg>
-    ),
+    iconType: "bike",
     time: "2-3",
     price: "₹40-50",
     description: "Quick rides for one",
@@ -33,21 +67,7 @@ const vehicles = [
   {
     id: "auto",
     name: "Auto",
-    icon: (
-      <svg
-        className="w-6 h-6"
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke="currentColor"
-      >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth={2}
-          d="M8 7h8m-8 5h8m-4-9v4m0 0l-4 4m4-4l4 4"
-        />
-      </svg>
-    ),
+    iconType: "auto",
     time: "5-7",
     price: "₹80-100",
     description: "Affordable rides for three",
@@ -58,21 +78,7 @@ const vehicles = [
   {
     id: "car",
     name: "Car",
-    icon: (
-      <svg
-        className="w-6 h-6"
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke="currentColor"
-      >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth={2}
-          d="M5 10l2-6h10l2 6m0 0v6a2 2 0 01-2 2H7a2 2 0 01-2-2v-6m0 0h14"
-        />
-      </svg>
-    ),
+    iconType: "car",
     time: "7-10",
     price: "₹150-200",
     description: "Comfort rides for four",
@@ -112,6 +118,7 @@ const VehicleOptions = ({ onSelect }) => {
       "selectedRide",
       JSON.stringify({
         ...selectedVehicle,
+        iconType: selectedVehicle.iconType,
         driver: mockDriver,
       })
     );
@@ -150,7 +157,7 @@ const VehicleOptions = ({ onSelect }) => {
         >
           <div className="flex items-center">
             <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mr-4">
-              {vehicle.icon}
+              {vehicleIcons[vehicle.iconType]}
             </div>
             <div>
               <h3 className="font-semibold">{vehicle.name}</h3>
@@ -166,7 +173,23 @@ const VehicleOptions = ({ onSelect }) => {
 
       {selectedVehicle && (
         <Button
-          onClick={handleConfirmRide}
+          onClick={() => {
+            // Save selected ride data to localStorage before navigation
+            localStorage.setItem(
+              "selectedRide",
+              JSON.stringify({
+                ...selectedVehicle,
+                iconType: selectedVehicle.iconType,
+                driver: {
+                  name: "John Driver",
+                  rating: 4.8,
+                  trips: 1250,
+                  vehiclePlate: selectedVehicle.vehicle.plate,
+                },
+              })
+            );
+            navigate("/ride-confirmation");
+          }}
           className="w-full mt-4 py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition-all duration-300 transform hover:scale-105"
         >
           Continue with {selectedVehicle.name}

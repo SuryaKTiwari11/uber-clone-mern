@@ -14,6 +14,11 @@ import CaptainHome from "./pages/CaptainHome";
 import CaptainProtectedWrapper from "./pages/CaptainProtectedWrapper";
 import Home from "./pages/Home";
 import RideConfirmation from "./pages/RideConfirmation";
+import PaymentPage from "./pages/PaymentPage";
+import RatingFeedback from "./pages/RatingFeedBack";
+import HelpSupport from "./pages/HelpSupport";
+import About from "./pages/About";
+import Services from "./pages/Services";
 
 const App = () => {
   return (
@@ -33,6 +38,12 @@ const App = () => {
           <Route path="/users-signup" element={<UserSignUp />} />
           <Route path="/home" element={<Home />} />
           <Route path="/ride-confirmation" element={<RideConfirmation />} />
+          <Route path="/payment" element={<PaymentPage />} />
+          <Route path="/rating-feedback" element={<RatingFeedback />} />
+          <Route path="/contact" element={<HelpSupport />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/services" element={<Services />} />
+
           <Route
             path="/captains-home"
             element={
